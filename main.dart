@@ -2,80 +2,159 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
-  runApp(MyApp());
+  runApp(MaterialApp(
+    title: 'Task-11 Project',
+    debugShowCheckedModeBanner: false,
+    home: MyApp(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
+//void main() {
+//runApp(MyApp());
+//}
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+// ignore: must_be_immutable
+class _MyAppState extends State<MyApp> {
+  get accentHexColor => null;
+
+//class MyApp extends StatelessWidget {
+  //late String cmd;
+
   web() async {
-    var url = Uri.http("13.126.173.30", "/cgi-bin/command.py", {"x": cmd});
+    var url = Uri.http("3.109.60.246", "/cgi-bin/command.py", {"x": cmd});
     var response = await http.get(url);
+    setState(() {
+      _res = response.body;
+    });
+
     print(response.body);
-    //print(x);
+    print(cmd);
+
+    print(_res);
   }
 
-  late String cmd;
+  TextEditingController _heightController = TextEditingController();
+  late String _res = "";
+  late String _output = "";
+  late String cmd = "";
 
-  lw() {
-    print("clicked me....");
-  }
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData.dark(),
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: lw,
-          child: Icon(Icons.accessible),
+          onPressed: web,
+          child: Icon(Icons.check_box),
         ),
         appBar: AppBar(
           title: Text("Dockinux App"),
+          backgroundColor: Colors.blueAccent,
           centerTitle: true,
-          backgroundColor: Colors.black,
           actions: [
             IconButton(
-              onPressed: lw,
+              onPressed: null,
               icon: Icon(Icons.account_box),
             )
           ],
         ),
-        body: Column(
-          children: [
-            Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                          "https://www.docker.com/sites/default/files/d8/2019-07/vertical-logo-monochromatic.png")),
-                  border: Border.all(color: Colors.blueAccent, width: 10)),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Text("Enter yr command:"),
-            TextField(
-              onChanged: (value) {
-                cmd = value;
-              },
-              autocorrect: false,
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.print),
-                  hintText: "enter command"),
-            ),
-            TextButton(
-              onPressed: web,
-              child: Text("Clicked cmd"),
-            ),
-          ],
-        ),
-      ),
-    );
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                  width: 400,
+                  height: 250,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                              "https://icon-library.com/images/docker-container-icon/docker-container-icon-15.jpg")),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.blueGrey)),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    width: 290,
+                    child: TextField(
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      onChanged: (value) {
+                        cmd = value;
+                      },
+                      controller: _heightController,
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w300,
+                          color: Colors.black),
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.all(15.0),
+                          child: Icon(Icons.computer,
+                              size: 35.0, color: Colors.black),
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(new Radius.circular(15.0))),
+                        hintText: "Enter ur Command.... ",
+                        hintStyle: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              GestureDetector(
+                onTap: web,
+                child: Container(
+                  child: Text(
+                    "Run",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                child: Text(
+                  "$_res", //toStringAsFixed(2),
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Visibility(
+                  visible: _output.isNotEmpty,
+                  child: Container(
+                    child: Text(
+                      _output,
+                      style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.blue),
+                    ),
+                  )),
+              SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                height: 50,
+              ),
+            ],
+          ),
+        ));
   }
 }
